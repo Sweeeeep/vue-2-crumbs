@@ -144,35 +144,56 @@ return /******/ (function(modules) { // webpackBootstrap
   // TODO: Write docs for each method
   methods: {
     // Function returns resolved page's breadcrumb property
+    // getBreadcrumb (route) {
+    //   let breadcrumb = route.meta.breadcrumb
+    //   const matchedRouteRecord = route.matched[route.matched.length - 1]
+    //   const matchedComponent = matchedRouteRecord.components.default
+    //   let componentBreadcrumb
+
+    //   // TODO: do a normal check for typescript-developed component
+    //   // Check is matched component made with typescript
+    //   if (typeof matchedComponent === 'function' && !!matchedComponent.super) {
+    //       if('breadcrumb' in matchedComponent.options){
+    //         if(typeof matchedComponent.options.breadcrumb === 'function'){
+    //             componentBreadcrumb = matchedComponent.options.breadcrumb()
+    //         }else{
+    //             componentBreadcrumb = matchedComponent.options.breadcrumb
+    //         }
+    //     }
+    //     // componentBreadcrumb = matchedComponent.options.breadcrumb
+    //   } else {
+    //     componentBreadcrumb = matchedComponent.breadcrumb
+    //   }
+
+    //   if (componentBreadcrumb && typeof componentBreadcrumb !== 'function') {
+    //     if (breadcrumb && typeof breadcrumb == 'object') {
+    //       breadcrumb = Object.assign(breadcrumb, componentBreadcrumb)
+    //     } else {
+    //       breadcrumb = componentBreadcrumb
+    //     }
+    //   }
+
+    //   console.log(breadcrumb)
+
+    //   return breadcrumb
+    // },
+
     getBreadcrumb(route) {
-      let breadcrumb = route.meta.breadcrumb;
-      const matchedRouteRecord = route.matched[route.matched.length - 1];
-      const matchedComponent = matchedRouteRecord.components.default;
-      let componentBreadcrumb;
-
-      // TODO: do a normal check for typescript-developed component
-      // Check is matched component made with typescript
-      if (typeof matchedComponent === 'function' && !!matchedComponent.super) {
-        if ('breadcrumb' in matchedComponent.options) {
-          if (typeof matchedComponent.options.breadcrumb === 'function') {
-            componentBreadcrumb = matchedComponent.options.breadcrumb();
-          } else {
-            componentBreadcrumb = matchedComponent.options.breadcrumb;
-          }
-        }
-        // componentBreadcrumb = matchedComponent.options.breadcrumb
-      } else {
-        componentBreadcrumb = matchedComponent.breadcrumb;
-      }
-
-      if (componentBreadcrumb && typeof componentBreadcrumb !== 'function') {
-        if (breadcrumb && typeof breadcrumb == 'object') {
-          breadcrumb = Object.assign(breadcrumb, componentBreadcrumb);
-        } else {
-          breadcrumb = componentBreadcrumb;
+      let Matchedcomponent;
+      let breadcrumb;
+      if (route.hasOwnProperty('meta') && route.meta.hasOwnProperty('breadcrumb')) breadcrumb = route.meta.breadcrumb;else {
+        Matchedcomponent = this.$router.getMatchedComponents(route.name);
+        if (Matchedcomponent.length >= 1) {
+          Matchedcomponent = Matchedcomponent.filter(component => {
+            if (component.hasOwnProperty('breadcrumb')) {
+              breadcrumb = component.breadcrumb;
+              return component;
+            }
+          });
         }
       }
-
+      /** resolve breadcrumb object with component aka self */
+      if (typeof breadcrumb === 'function') breadcrumb = breadcrumb.call(this, Matchedcomponent[0]);
       return breadcrumb;
     },
 
