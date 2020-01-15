@@ -268,21 +268,39 @@ return /******/ (function(modules) { // webpackBootstrap
     },
 
     // Function returns array of parents routes
+    // getAncestorsRoutesArray (route) {
+    //   let parentRoutesArray = []
+    //   const parentRoute = this.getParentRoute(route)
+
+    //   if (parentRoute) {
+    //     const {path, name, params, query, hash} = parentRoute
+    //     const routeObjectToAdd = {
+    //       to: {path, name, params, query, hash},
+    //       label: this.getRouteLabel(parentRoute),
+    //       utils: this.getRouteUtils(parentRoute)
+    //     }
+
+    //     parentRoutesArray = [...this.getAncestorsRoutesArray(parentRoute), routeObjectToAdd]
+    //   }
+
+    //   return parentRoutesArray
+    // },
     getAncestorsRoutesArray(route) {
       let parentRoutesArray = [];
-      const parentRoute = this.getParentRoute(route);
-
-      if (parentRoute) {
-        const { path, name, params, query, hash } = parentRoute;
+      if (this.getParentRoute(route)) {
+        const resolvedParentRoute = this.$router.resolve({ name: this.getParentRoute(route) });
+        const { path, name, params, query, hash } = resolvedParentRoute.resolved;
         const routeObjectToAdd = {
           to: { path, name, params, query, hash },
-          label: this.getRouteLabel(parentRoute),
-          utils: this.getRouteUtils(parentRoute)
+          label: this.getRouteLabel(resolvedParentRoute.resolved),
+          utils: this.getRouteUtils(resolvedParentRoute.resolved)
         };
-
-        parentRoutesArray = [...this.getAncestorsRoutesArray(parentRoute), routeObjectToAdd];
+        if (this.getParentRoute(resolvedParentRoute.resolved) !== this.getParentRoute(route)) {
+          parentRoutesArray = [...this.getAncestorsRoutesArray(resolvedParentRoute.resolved), routeObjectToAdd];
+        } else {
+          parentRoutesArray.push(routeObjectToAdd);
+        }
       }
-
       return parentRoutesArray;
     }
   },
