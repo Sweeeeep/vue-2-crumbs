@@ -229,16 +229,16 @@ return /******/ (function(modules) { // webpackBootstrap
   created() {
     // Listen to the change of route breadcrumb object
 
-    // this.$_vue2Crumbs_eventBUS.$on('breadcrumbChanged', () => {
-    //   const metaBreadcrumb = this.$route.meta.breadcrumb
-    //   if (metaBreadcrumb.parentsList) {
-    //     this.parentsDynamicRoutes = [...metaBreadcrumb.parentsList].reverse()
-    //   }
-    //   if (metaBreadcrumb.parent) {
-    //     this.parentHelper = metaBreadcrumb.parent
-    //   }
-    //   this.$forceUpdate()
-    // })
+    this.$_vue2Crumbs_eventBUS.$on('breadcrumbChanged', () => {
+      const metaBreadcrumb = this.$route.meta.breadcrumb;
+      if (metaBreadcrumb.parentsList) {
+        this.parentsDynamicRoutes = [...metaBreadcrumb.parentsList].reverse();
+      }
+      if (metaBreadcrumb.parent) {
+        this.parentHelper = metaBreadcrumb.parent;
+      }
+      this.$forceUpdate();
+    });
   }
 });
 
@@ -255,85 +255,84 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    version: '0.1.1',
-    install(Vue, options) {
-        Vue.component(__WEBPACK_IMPORTED_MODULE_0__breadcrumbComponent_vue__["a" /* default */].name, __WEBPACK_IMPORTED_MODULE_0__breadcrumbComponent_vue__["a" /* default */]);
+  version: '0.1.1',
+  install(Vue, options) {
+    Vue.component(__WEBPACK_IMPORTED_MODULE_0__breadcrumbComponent_vue__["a" /* default */].name, __WEBPACK_IMPORTED_MODULE_0__breadcrumbComponent_vue__["a" /* default */]);
 
-        // function $_vue2Crumbs_dispatchNewValue(meta) {
-        //   const {label, parentsList, parent, utils} = this.$breadcrumb
+    function $_vue2Crumbs_dispatchNewValue(meta) {
+      const { label, parentsList, parent, utils } = this.$breadcrumb;
 
-        //   if (!meta.breadcrumb) {
-        //     meta.breadcrumb = {}
-        //   }
+      if (!meta.breadcrumb) {
+        meta.breadcrumb = {};
+      }
 
-        //   let metaBreadcrumb = meta.breadcrumb
+      let metaBreadcrumb = meta.breadcrumb;
 
-        //   if (typeof metaBreadcrumb === 'string') {
-        //     metaBreadcrumb = {
-        //       label: metaBreadcrumb
-        //     }
-        //   }
+      if (typeof metaBreadcrumb === 'string') {
+        metaBreadcrumb = {
+          label: metaBreadcrumb
+        };
+      }
 
-        //   if (label) {
-        //     metaBreadcrumb.label = label
-        //   }
+      if (label) {
+        metaBreadcrumb.label = label;
+      }
 
-        //   if (parent) {
-        //     metaBreadcrumb.parent = parent
-        //   }
+      if (parent) {
+        metaBreadcrumb.parent = parent;
+      }
 
-        //   if (parentsList) {
-        //     metaBreadcrumb.parentsList = parentsList
-        //   }
-        //   if (utils) {
-        //     metaBreadcrumb.utils = utils
-        //   }
+      if (parentsList) {
+        metaBreadcrumb.parentsList = parentsList;
+      }
+      if (utils) {
+        metaBreadcrumb.utils = utils;
+      }
 
-        //   this.$_vue2Crumbs_eventBUS.$emit('breadcrumbChanged')
-        // }
-
-        // function $_vue2Crumbs_checkMatchedRoutes() {
-        //   if (this.$breadcrumb) {
-        //     let matchedRoutes = [...this.$route.matched].reverse()
-        //     for(let route of matchedRoutes) {
-        //       const routeComponentInstance = route.instances.default
-
-        //       if (isEqual(routeComponentInstance, this)) {
-        //         $_vue2Crumbs_dispatchNewValue.call(this, route.meta)
-        //         break
-        //       }
-        //     }
-        //   }
-        // }
-
-        // Vue.prototype.$_vue2Crumbs_eventBUS = new Vue()
-
-        // Vue.component(Breadcrumbs.name, Breadcrumbs)
-
-        // Vue.mixin({
-        //   methods: {
-        //   },
-        //   beforeCreate () {
-        //     if (typeof this.$options.breadcrumb === 'function') {
-        //       if (typeof this.$options.computed === 'undefined') {
-        //         this.$options.computed = {}
-        //       }
-        //       this.$options.computed.$breadcrumb = this.$options.breadcrumb
-        //     }
-        //   },
-        //   watch: {
-        //     $route () {
-        //       $_vue2Crumbs_checkMatchedRoutes.call(this)
-        //     },
-        //     $breadcrumb: {
-        //       handler () {
-        //         $_vue2Crumbs_checkMatchedRoutes.call(this)
-        //       },
-        //       immediate: true
-        //     }
-        //   }
-        // })
+      this.$_vue2Crumbs_eventBUS.$emit('breadcrumbChanged');
     }
+
+    function $_vue2Crumbs_checkMatchedRoutes() {
+      if (this.$breadcrumb) {
+        let matchedRoutes = [...this.$route.matched].reverse();
+        for (let route of matchedRoutes) {
+          const routeComponentInstance = route.instances.default;
+
+          if (__WEBPACK_IMPORTED_MODULE_1_lodash_isequal___default()(routeComponentInstance, this)) {
+            $_vue2Crumbs_dispatchNewValue.call(this, route.meta);
+            break;
+          }
+        }
+      }
+    }
+
+    Vue.prototype.$_vue2Crumbs_eventBUS = new Vue();
+
+    Vue.component(__WEBPACK_IMPORTED_MODULE_0__breadcrumbComponent_vue__["a" /* default */].name, __WEBPACK_IMPORTED_MODULE_0__breadcrumbComponent_vue__["a" /* default */]);
+
+    Vue.mixin({
+      methods: {},
+      beforeCreate() {
+        if (typeof this.$options.breadcrumb === 'function') {
+          if (typeof this.$options.computed === 'undefined') {
+            this.$options.computed = {};
+          }
+          this.$options.computed.$breadcrumb = this.$options.breadcrumb;
+        }
+      },
+      watch: {
+        $route() {
+          $_vue2Crumbs_checkMatchedRoutes.call(this);
+        },
+        $breadcrumb: {
+          handler() {
+            $_vue2Crumbs_checkMatchedRoutes.call(this);
+          },
+          immediate: true
+        }
+      }
+    });
+  }
 });
 
 /***/ }),
