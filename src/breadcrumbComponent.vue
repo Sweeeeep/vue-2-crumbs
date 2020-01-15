@@ -207,17 +207,17 @@ export default {
   },
   created () {
     // Listen to the change of route breadcrumb object
-    this.$_vue2Crumbs_eventBUS.$on('breadcrumbChanged', () => {
-      const metaBreadcrumb = this.$route.meta.breadcrumb
+    // this.$_vue2Crumbs_eventBUS.$on('breadcrumbChanged', () => {
+    //   const metaBreadcrumb = this.$route.meta.breadcrumb
 
-      if (metaBreadcrumb.parentsList) {
-        this.parentsDynamicRoutes = [...metaBreadcrumb.parentsList].reverse()
-      }
-      if (metaBreadcrumb.parent) {
-        this.parentHelper = metaBreadcrumb.parent
-      }
-      this.$forceUpdate()
-    })
+    //   if (metaBreadcrumb.parentsList) {
+    //     this.parentsDynamicRoutes = [...metaBreadcrumb.parentsList].reverse()
+    //   }
+    //   if (metaBreadcrumb.parent) {
+    //     this.parentHelper = metaBreadcrumb.parent
+    //   }
+    //   this.$forceUpdate()
+    // })
   }
 }
 </script>
