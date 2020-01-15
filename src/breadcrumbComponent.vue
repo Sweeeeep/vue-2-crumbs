@@ -1,25 +1,24 @@
 <template>
-	<ul class="breadcrumbs-container" :is="container" v-if="$router">
-		<template v-if="parentRoutes.length">
-			<template v-for="route in parentRoutes">
-				<slot :to="route.to" :label="route.label" :utils="route.utils">
-					<li class="parent-breadcrumb">
-						<router-link :to="route.to" exact>
-							{{route.label}}
-						</router-link>
-					</li>
-				</slot>
+	<nav class="breadcrumb" :is="container" v-if="$router">
+		<div class="container-fluid">
+			<template v-if="parentRoutes.length">
+				<template v-for="(route,index) in parentRoutes">
+					<slot :to="route.to" :label="route.label" :utils="route.utils">
+						<span class="breadcrumb-item" v-for="(item, index) in breadcrumbs.data" :key="index">
+							<router-link :to="route.to" exact>
+								{{route.label}}
+							</router-link>
+						</span>
+					</slot>
+				</template>
 			</template>
-		</template>
-
-		<li v-if="!isInitialEmptyRoute" class="current-breadcrumb">
-			<slot name="current" :label="getRouteLabel(currentRoute)">
-				<a>
-					{{getRouteLabel(currentRoute)}}
-				</a>
-			</slot>
-		</li>
-	</ul>
+			<span v-if="!isInitialEmptyRoute" class="breadcrumb">
+				<slot name="current" :label="getRouteLabel(currentRoute)">
+					{{ getRouteLabel(currentRoute) }}
+				</slot>
+			</span>
+		</div>
+	</nav>
 </template>
 <script>
 export default {
