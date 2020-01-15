@@ -4,7 +4,7 @@
 			<template v-if="parentRoutes.length">
 				<template v-for="(route,index) in parentRoutes">
 					<slot :to="route.to" :label="route.label" :utils="route.utils">
-						<span class="breadcrumb-item" v-for="(item, index) in breadcrumbs.data" :key="index">
+						<span class="breadcrumb-item" :key="index">
 							<router-link :to="route.to" exact>
 								{{route.label}}
 							</router-link>

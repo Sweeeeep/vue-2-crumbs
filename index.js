@@ -481,8 +481,8 @@ var render = function() {
                     return [
                       _vm._t(
                         "default",
-                        _vm._l(_vm.breadcrumbs.data, function(item, index) {
-                          return _c(
+                        [
+                          _c(
                             "span",
                             { key: index, staticClass: "breadcrumb-item" },
                             [
@@ -500,7 +500,7 @@ var render = function() {
                             ],
                             1
                           )
-                        }),
+                        ],
                         { to: route.to, label: route.label, utils: route.utils }
                       )
                     ]
