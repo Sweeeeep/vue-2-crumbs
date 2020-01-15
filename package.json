@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sweeeeep/vue-2-crumbs.git"
+    "url": "git+https://github.com/Sweeeeep/vue-2-crumbs.git#dev"
   },
   "keywords": [
     "vuejs",
