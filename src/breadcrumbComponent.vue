@@ -57,57 +57,35 @@ export default {
   // TODO: Write docs for each method
   methods: {
     // Function returns resolved page's breadcrumb property
-    // getBreadcrumb (route) {
-    //   let breadcrumb = route.meta.breadcrumb
-    //   const matchedRouteRecord = route.matched[route.matched.length - 1]
-    //   const matchedComponent = matchedRouteRecord.components.default
-    //   let componentBreadcrumb
+    getBreadcrumb (route) {
+      let breadcrumb = route.meta.breadcrumb
+      const matchedRouteRecord = route.matched[route.matched.length - 1]
+      const matchedComponent = matchedRouteRecord.components.default
+      let componentBreadcrumb
 
-    //   // TODO: do a normal check for typescript-developed component
-    //   // Check is matched component made with typescript
-    //   if (typeof matchedComponent === 'function' && !!matchedComponent.super) {
-    //       if('breadcrumb' in matchedComponent.options){
-    //         if(typeof matchedComponent.options.breadcrumb === 'function'){
-    //             componentBreadcrumb = matchedComponent.options.breadcrumb()
-    //         }else{
-    //             componentBreadcrumb = matchedComponent.options.breadcrumb
-    //         }
-    //     }
-    //     // componentBreadcrumb = matchedComponent.options.breadcrumb
-    //   } else {
-    //     componentBreadcrumb = matchedComponent.breadcrumb
-    //   }
-
-    //   if (componentBreadcrumb && typeof componentBreadcrumb !== 'function') {
-    //     if (breadcrumb && typeof breadcrumb == 'object') {
-    //       breadcrumb = Object.assign(breadcrumb, componentBreadcrumb)
-    //     } else {
-    //       breadcrumb = componentBreadcrumb
-    //     }
-	//   }
-	  
-	//   console.log(breadcrumb)
-
-    //   return breadcrumb
-	// },
-	
-	getBreadcrumb (route) {
-      let Matchedcomponent
-      let breadcrumb
-      if (route.hasOwnProperty('meta') && route.meta.hasOwnProperty('breadcrumb')) breadcrumb = route.meta.breadcrumb
-      else {
-        Matchedcomponent = this.$router.getMatchedComponents(route.name)
-        if (Matchedcomponent.length >= 1) {
-          Matchedcomponent = Matchedcomponent.filter(component => {
-            if (component.hasOwnProperty('breadcrumb')) {
-              breadcrumb = component.breadcrumb
-              return component
+      // TODO: do a normal check for typescript-developed component
+      // Check is matched component made with typescript
+      if (typeof matchedComponent === 'function' && !!matchedComponent.super) {
+          if('breadcrumb' in matchedComponent.options){
+            if(typeof matchedComponent.options.breadcrumb === 'function'){
+                componentBreadcrumb = matchedComponent.options.breadcrumb()
+            }else{
+                componentBreadcrumb = matchedComponent.options.breadcrumb
             }
-          })
+        }
+        // componentBreadcrumb = matchedComponent.options.breadcrumb
+      } else {
+        componentBreadcrumb = matchedComponent.breadcrumb
+      }
+
+      if (componentBreadcrumb && typeof componentBreadcrumb !== 'function') {
+        if (breadcrumb && typeof breadcrumb == 'object') {
+          breadcrumb = Object.assign(breadcrumb, componentBreadcrumb)
+        } else {
+          breadcrumb = componentBreadcrumb
         }
       }
-      /** resolve breadcrumb object with component aka self */
-      if (typeof breadcrumb === 'function') breadcrumb = breadcrumb.call(this, Matchedcomponent[0])
+
       return breadcrumb
     },
 
@@ -123,14 +101,23 @@ export default {
 
     // Function resolves a label of the provided route
     getRouteLabel (route) {
-      if (this.getBreadcrumbLabel(this.getBreadcrumb(route))) return this.getBreadcrumbLabel(this.getBreadcrumb(route))
-      else return route.name
-    },
+      let routeLabel = route.name
+      const breadcrumb = this.getBreadcrumb(route)
+      const breadcrumbLabel = this.getBreadcrumbLabel(breadcrumb)
 
+      if (breadcrumbLabel) {
+        routeLabel = breadcrumbLabel
+      }
+
+      return routeLabel
+    },
 
     // Function resolves a utils object of the provided route
     getRouteUtils (route) {
-      if (this.getBreadcrumb(route) && this.getBreadcrumb(route).hasOwnProperty('utils')) return this.getBreadcrumb(route).utils
+      const breadcrumb = this.getBreadcrumb(route)
+      if (breadcrumb && breadcrumb.utils) {
+        return breadcrumb.utils
+      }
     },
 
     resolveRootParentRoute (parentRouteRecord) {
@@ -178,58 +165,37 @@ export default {
     },
 
     // Function resolve a parent route if such exist
-    // getParentRoute (route) {
-    //   let parentRoute
-    //   const directParentRoute = this.getDirectParentRoute(route)
+    getParentRoute (route) {
+      let parentRoute
+      const directParentRoute = this.getDirectParentRoute(route)
 
-    //   // Check if component has breadcrumb object
-    //   if (directParentRoute) {
-    //     parentRoute = directParentRoute
-    //   } else if (route.matched && route.matched.length > 1) {
-    //     // Get Default Route Parent (if sub-routing uses)
-    //     parentRoute = this.getRootParentRoute(route)
-    //   }
+      // Check if component has breadcrumb object
+      if (directParentRoute) {
+        parentRoute = directParentRoute
+      } else if (route.matched && route.matched.length > 1) {
+        // Get Default Route Parent (if sub-routing uses)
+        parentRoute = this.getRootParentRoute(route)
+      }
 
-    //   return parentRoute
-    // },
+      return parentRoute
+    },
 
     // Function returns array of parents routes
-    // getAncestorsRoutesArray (route) {
-    //   let parentRoutesArray = []
-    //   const parentRoute = this.getParentRoute(route)
-
-    //   if (parentRoute) {
-    //     const {path, name, params, query, hash} = parentRoute
-    //     const routeObjectToAdd = {
-    //       to: {path, name, params, query, hash},
-    //       label: this.getRouteLabel(parentRoute),
-    //       utils: this.getRouteUtils(parentRoute)
-    //     }
-
-    //     parentRoutesArray = [...this.getAncestorsRoutesArray(parentRoute), routeObjectToAdd]
-    //   }
-
-    //   return parentRoutesArray
-    // },
-    getParentRoute (route) {
-      return this.getDirectParentRoute(route) ? this.getDirectParentRoute(route) : this.getRootParentRoute(route)
-    },
     getAncestorsRoutesArray (route) {
       let parentRoutesArray = []
-      if (this.getParentRoute(route)) {
-        const resolvedParentRoute = this.$router.resolve({ name: this.getParentRoute(route) })
-        const { path, name, params, query, hash } = resolvedParentRoute.resolved
+      const parentRoute = this.getParentRoute(route)
+
+      if (parentRoute) {
+        const {path, name, params, query, hash} = parentRoute
         const routeObjectToAdd = {
-          to: { path, name, params, query, hash },
-          label: this.getRouteLabel(resolvedParentRoute.resolved),
-          utils: this.getRouteUtils(resolvedParentRoute.resolved)
+          to: {path, name, params, query, hash},
+          label: this.getRouteLabel(parentRoute),
+          utils: this.getRouteUtils(parentRoute)
         }
-        if (this.getParentRoute(resolvedParentRoute.resolved) !== this.getParentRoute(route)) {
-          parentRoutesArray = [...this.getAncestorsRoutesArray(resolvedParentRoute.resolved), routeObjectToAdd]
-        } else {
-          parentRoutesArray.push(routeObjectToAdd)
-        }
+
+        parentRoutesArray = [...this.getAncestorsRoutesArray(parentRoute), routeObjectToAdd]
       }
+
       return parentRoutesArray
     }
   },
