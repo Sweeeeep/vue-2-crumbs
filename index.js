@@ -511,7 +511,7 @@ var render = function() {
             !_vm.isInitialEmptyRoute
               ? _c(
                   "span",
-                  { staticClass: "breadcrumb" },
+                  { staticClass: "breadcrumb-item" },
                   [
                     _vm._t(
                       "current",

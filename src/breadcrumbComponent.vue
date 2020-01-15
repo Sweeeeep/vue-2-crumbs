@@ -12,7 +12,7 @@
 					</slot>
 				</template>
 			</template>
-			<span v-if="!isInitialEmptyRoute" class="breadcrumb">
+			<span v-if="!isInitialEmptyRoute" class="breadcrumb-item">
 				<slot name="current" :label="getRouteLabel(currentRoute)">
 					{{ getRouteLabel(currentRoute) }}
 				</slot>
