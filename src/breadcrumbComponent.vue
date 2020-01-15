@@ -101,23 +101,14 @@ export default {
 
     // Function resolves a label of the provided route
     getRouteLabel (route) {
-      let routeLabel = route.name
-      const breadcrumb = this.getBreadcrumb(route)
-      const breadcrumbLabel = this.getBreadcrumbLabel(breadcrumb)
-
-      if (breadcrumbLabel) {
-        routeLabel = breadcrumbLabel
-      }
-
-      return routeLabel
+      if (this.getBreadcrumbLabel(this.getBreadcrumb(route))) return this.getBreadcrumbLabel(this.getBreadcrumb(route))
+      else return route.name
     },
+
 
     // Function resolves a utils object of the provided route
     getRouteUtils (route) {
-      const breadcrumb = this.getBreadcrumb(route)
-      if (breadcrumb && breadcrumb.utils) {
-        return breadcrumb.utils
-      }
+      if (this.getBreadcrumb(route) && this.getBreadcrumb(route).hasOwnProperty('utils')) return this.getBreadcrumb(route).utils
     },
 
     resolveRootParentRoute (parentRouteRecord) {
@@ -165,37 +156,58 @@ export default {
     },
 
     // Function resolve a parent route if such exist
-    getParentRoute (route) {
-      let parentRoute
-      const directParentRoute = this.getDirectParentRoute(route)
+    // getParentRoute (route) {
+    //   let parentRoute
+    //   const directParentRoute = this.getDirectParentRoute(route)
 
-      // Check if component has breadcrumb object
-      if (directParentRoute) {
-        parentRoute = directParentRoute
-      } else if (route.matched && route.matched.length > 1) {
-        // Get Default Route Parent (if sub-routing uses)
-        parentRoute = this.getRootParentRoute(route)
-      }
+    //   // Check if component has breadcrumb object
+    //   if (directParentRoute) {
+    //     parentRoute = directParentRoute
+    //   } else if (route.matched && route.matched.length > 1) {
+    //     // Get Default Route Parent (if sub-routing uses)
+    //     parentRoute = this.getRootParentRoute(route)
+    //   }
 
-      return parentRoute
-    },
+    //   return parentRoute
+    // },
 
     // Function returns array of parents routes
+    // getAncestorsRoutesArray (route) {
+    //   let parentRoutesArray = []
+    //   const parentRoute = this.getParentRoute(route)
+
+    //   if (parentRoute) {
+    //     const {path, name, params, query, hash} = parentRoute
+    //     const routeObjectToAdd = {
+    //       to: {path, name, params, query, hash},
+    //       label: this.getRouteLabel(parentRoute),
+    //       utils: this.getRouteUtils(parentRoute)
+    //     }
+
+    //     parentRoutesArray = [...this.getAncestorsRoutesArray(parentRoute), routeObjectToAdd]
+    //   }
+
+    //   return parentRoutesArray
+    // },
+    getParentRoute (route) {
+      return this.getDirectParentRoute(route) ? this.getDirectParentRoute(route) : this.getRootParentRoute(route)
+    },
     getAncestorsRoutesArray (route) {
       let parentRoutesArray = []
-      const parentRoute = this.getParentRoute(route)
-
-      if (parentRoute) {
-        const {path, name, params, query, hash} = parentRoute
+      if (this.getParentRoute(route)) {
+        const resolvedParentRoute = this.$router.resolve({ name: this.getParentRoute(route) })
+        const { path, name, params, query, hash } = resolvedParentRoute.resolved
         const routeObjectToAdd = {
-          to: {path, name, params, query, hash},
-          label: this.getRouteLabel(parentRoute),
-          utils: this.getRouteUtils(parentRoute)
+          to: { path, name, params, query, hash },
+          label: this.getRouteLabel(resolvedParentRoute.resolved),
+          utils: this.getRouteUtils(resolvedParentRoute.resolved)
         }
-
-        parentRoutesArray = [...this.getAncestorsRoutesArray(parentRoute), routeObjectToAdd]
+        if (this.getParentRoute(resolvedParentRoute.resolved) !== this.getParentRoute(route)) {
+          parentRoutesArray = [...this.getAncestorsRoutesArray(resolvedParentRoute.resolved), routeObjectToAdd]
+        } else {
+          parentRoutesArray.push(routeObjectToAdd)
+        }
       }
-
       return parentRoutesArray
     }
   },
